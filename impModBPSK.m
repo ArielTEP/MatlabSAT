@@ -27,7 +27,7 @@ function [BPSKsignal, dataArray] = impModBPSK(time)
     inputSamples = [1,1,1,1, 0,1,1,0,0,1,1,0,1 ,0,0,0, 1,1,1,1, 0,1,1,0,0,1,1,0,1 ,0,0,0, 1,1,1,1, 0,1,1,0,0,1,1,0,1 ,0,0,0, 1,1,1,1, 0,1,1,0,0,1,1,0,1 ,0,0,0, 1,1,1,1, 0,1,1,0,0,1,1,0,1 ,0,0,0, 1,1,1,1, 0,1,1,0,0,1,1,0,1 ,0,0,0, 1,1,1,1, 0,1,1,0,0,1,1,0,1 ,0,0,0, 1,1,1,1, 0,1,1,0,0,1,1,0,1 ,0,0,0, 1,1,1,1, 0,1,1,0,0,1,1,0,1 ,0,0,0, 1,1,1,1, 0,1,1,0,0,1,1,0,1 ,0,0,0];
     isLength = length(inputSamples);
     addSamples = numberOfSamples - isLength;
-    inputSamples = [inputSamples addSamples];
+    inputSamples = [inputSamples zeros(1,addSamples)];
     % Real-Time (In serie simulation)
     k=1;
     j=1;
