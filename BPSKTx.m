@@ -1,7 +1,7 @@
 clc
 clear all
 close all
-
+% this is sth new hello MB
 % Simulation of an impulse modulated raised-cosine BPSK signal generator
 % input terms
 Fs = 32000;          % sample frequency of simulation (Hz)
