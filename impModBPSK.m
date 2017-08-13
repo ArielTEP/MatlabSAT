@@ -3,7 +3,7 @@ function [BPSKsignal, dataArray] = impModBPSK(time)
     % Simulation of an impulse modulated raised-cosine BPSK signal generator
     % input terms
     Fs = 32000;          % sample frequency of simulation (Hz)
-    dataRate = 16000;     % data rate in bps
+    dataRate = 1600;     % data rate in bps
     beta = 0.25;        % raised-cosine rolloff factor
     symbols = 2;        % symbols per 2-bit (1-bit, per symbol)(symbol periods)
     %time = 3;       % length of signal in seconds
@@ -31,17 +31,18 @@ function [BPSKsignal, dataArray] = impModBPSK(time)
     % Real-Time (In serie simulation)
     k=1;
     j=1;
-    dataArray = inputSamples;
+    %dataArray = inputSamples;
     for i = 1:numberOfSamples
         % get the new data bit at the beginning of a symbol period
         if(counter == 1)
-            %data = A*(2*(rand > 0.5)-1);
-            data = A*(2*(inputSamples(j))-1);
+            data = A*(2*(rand > 0.5)-1);
+            %data = A*(2*(inputSamples(j))-1);
             j=j+1;
-            dataArray = [dataArray data/A];
+            
         else
             data = 0;
         end
+        dataArray(k) = data/A;
         %sound(data,Fs)
         % pulse modulated signal
         [impulseModulatedData, Zf] = filter(B, 1, data, Zi);
@@ -59,7 +60,7 @@ function [BPSKsignal, dataArray] = impModBPSK(time)
         k=k+1;
     end
     plot((0:1/Fs:time-1/Fs),BPSKsignal)
-    xlim([0 0.001])
+    xlim([0 2/dataRate])
     X = abs(fft(BPSKsignal, 1024));
     figure, plot(fftshift(X))
     sound(BPSKsignal,Fs)
