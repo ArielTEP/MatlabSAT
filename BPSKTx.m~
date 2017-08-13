@@ -9,10 +9,10 @@ dataRate = 16000;     % data rate in bps
 beta = 0.25;        % raised-cosine rolloff factor
 symbols = 2;        % symbols per 2-bit (1-bit, per symbol)(symbol periods)
 time = 3;       % length of signal in seconds
-A = 10;             %  scale factor
+A = 1000;             %  scale factor
 f = Fs/4;           % carrier frequency
-cosine=[1 0 -1 0];  % cos(2*pi*f*n)
-%cosine = cos(2*pi*f.*[1 2 3 4]);
+%cosine=[1 0 -1 0];  % cos(2*pi*f*n)
+cosine = cos(2*pi*f.*[1 2 3 4]);
 counter = 1;        % used to get a new data bit
 
 % calculated terms
