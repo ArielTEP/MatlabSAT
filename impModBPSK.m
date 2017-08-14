@@ -1,4 +1,5 @@
 function [BPSKsignal, dataArray] = impModBPSK(time)
+   
     % this is sth new hello MB
     % Simulation of an impulse modulated raised-cosine BPSK signal generator
     % input terms
@@ -54,13 +55,13 @@ function [BPSKsignal, dataArray] = impModBPSK(time)
         if(counter == samplesPerSymbol)
             counter = 0;
         end
-        %sound(output,Fs)
+
         % increment counter
         counter = counter + 1;
         k=k+1;
     end
     plot((0:1/Fs:time-1/Fs),BPSKsignal)
-    xlim([0 2/dataRate])
+    xlim([0 10/dataRate])
     X = abs(fft(BPSKsignal, 1024));
     figure, plot(fftshift(X))
     sound(BPSKsignal,Fs)
