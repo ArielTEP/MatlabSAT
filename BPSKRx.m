@@ -18,7 +18,8 @@ numberOfSamples = Fs*time;
 samplesPerSymbol = Fs/dataRate;
 
 % create rised-cosine filter
-B = (rcosfir(0.25, symbols/2, samplesPerSymbol, 1/Fs));
+beta = 0.25;
+ B = (rcosfir(beta, symbols/2, samplesPerSymbol, 1/Fs));
 
 % Generate the BPSK transmitter's signal
 [BPSKsignal, dataArray] = impModBPSK(time);
@@ -62,12 +63,15 @@ symbolsPerSecond = dataRate + 1 ;   % symbol rate w/ offset from 1600
 
 delay = samplesPerSymbol;
 decisionSummary = []; % zeros(1,length(BPSKsignal)+delay);
-k = 1;
+errorSummary = [];
+rcvData = [];
+decision = [];
+
 % Real Time Simulation
 for i = 1:length(BPSKsignal)
     % ********** PLL *******************
     phaseDetectorOutput = analyticSignal(i)*vcoOutput(i);
-    m = 8*real(phaseDetectorOutput);
+    m = 7*real(phaseDetectorOutput);
     q = real(phaseDetectorOutput) * imag(phaseDetectorOutput);
     [loopFilterOutputPLL, Zf_pll] = filter(B_PLL, A_PLL, q);
     loopFilterOutputSummary = [loopFilterOutputSummary loopFilterOutputPLL];
@@ -75,34 +79,25 @@ for i = 1:length(BPSKsignal)
     vcoOutput(i+1) = exp(-j*phi);
     % **********************************
     
-    % Maximum Likelyhood and Time recovery **********
+    % Maximum Likelyhood for Time recovery **********
     [MFoutput, Zf_MF] = filter(B, 1, m);
     [diffMFoutput, Zf_diff] = filter([1 0 -1], 1, MFoutput);
     phaseAccumML = phaseAccumML + phaseIncML;
     
-    %if i<=95999
-        delayedMFoutput = MFoutput;
-    %else
-    %    delayedMFoutput = 0;
-    %end
+    delayedMFoutput = MFoutput;
+
     % Time recovery loop
     if phaseAccumML >= 2*pi
        phaseAccumML = phaseAccumML - 2*pi;
-     %  if i <= 95999
-           decision = sign(delayedMFoutput);
-      % else
-       %    decision = sign(0);
-       %end
-       decisionSummary(i) = decision; % plotc
+       decision = sign(delayedMFoutput);
        [error, Zi_ML_loop] = filter(B_ML, A_ML, decision*diffMFoutput);
        phaseAccumML = phaseAccumML - error;
-       errorSummary(i) = error; % plot
-       
+       errorSummary = [errorSummary error]; % plot
+       decisionSummary = [decisionSummary decision]; % plotc
     else
-        errorSummary(i) = 0;    % plot
+        errorSummary = [errorSummary 0];    % plot
     end
     % ***********************************************
-    k = k+1;
     %delayedMFoutput = MFoutput;
 end
 figure
@@ -116,8 +111,9 @@ figure, plot(errorSummary);
 title('errorSummary');
 
 
-dataArray(downsample(1:50,samplesPerSymbol))
-decisionSummary(downsample(1 + delay : 50 +delay,samplesPerSymbol))
+[decisionSummary(1:10)', downsample(dataArray(1:200),samplesPerSymbol)']
+%dataArray(downsample(1:50,samplesPerSymbol))
+%decisionSummary(downsample(1 + delay : 50 +delay,samplesPerSymbol))
 
 
 

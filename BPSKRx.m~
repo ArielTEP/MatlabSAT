@@ -59,13 +59,17 @@ A_ML = [1 -1];
 phaseAccumML = 2*pi*rand(1);
 symbolsPerSecond = dataRate + 1 ;   % symbol rate w/ offset from 1600
 
-decisionSummary =[];% zeros(1,length(BPSKsignal));
+
+delay = samplesPerSymbol;
+decisionSummary = []; % zeros(1,length(BPSKsignal)+delay);
+rcvData = [];
+decision = [];
 k = 1;
 % Real Time Simulation
 for i = 1:length(BPSKsignal)
     % ********** PLL *******************
     phaseDetectorOutput = analyticSignal(i)*vcoOutput(i);
-    m = 10*real(phaseDetectorOutput);
+    m = 6*real(phaseDetectorOutput);
     q = real(phaseDetectorOutput) * imag(phaseDetectorOutput);
     [loopFilterOutputPLL, Zf_pll] = filter(B_PLL, A_PLL, q);
     loopFilterOutputSummary = [loopFilterOutputSummary loopFilterOutputPLL];
@@ -91,7 +95,9 @@ for i = 1:length(BPSKsignal)
       % else
        %    decision = sign(0);
        %end
-       decisionSummary(k) = decision; % plotc
+
+        decisionSummary = [decisionSummary decision]; % plotc
+
        [error, Zi_ML_loop] = filter(B_ML, A_ML, decision*diffMFoutput);
        phaseAccumML = phaseAccumML - error;
        errorSummary(i) = error; % plot
@@ -114,6 +120,9 @@ figure, plot(errorSummary);
 title('errorSummary');
 
 
+
+%dataArray(downsample(1:50,samplesPerSymbol))
+%decisionSummary(downsample(1 + delay : 50 +delay,samplesPerSymbol))
 
 
 

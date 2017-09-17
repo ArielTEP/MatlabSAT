@@ -36,8 +36,8 @@ function [BPSKsignal, dataArray] = impModBPSK(time)
     for i = 1:numberOfSamples
         % get the new data bit at the beginning of a symbol period
         if(counter == 1)
-            data = A*(2*(rand > 0.5)-1);
-            %data = A*(2*(inputSamples(j))-1);
+            %data = A*(2*(rand > 0.5)-1);
+            data = A*(2*(inputSamples(j))-1);
             j=j+1;
             
         else
@@ -64,6 +64,6 @@ function [BPSKsignal, dataArray] = impModBPSK(time)
     xlim([0 10/dataRate])
     X = abs(fft(BPSKsignal, 1024));
     figure, plot(fftshift(X))
-    sound(BPSKsignal,Fs)
+    %sound(BPSKsignal,Fs)
 
 end
